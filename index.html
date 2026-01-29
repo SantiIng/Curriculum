@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SANTIAGO SAGRERO ARVEA</title>
+
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="index, noarchive">
+    <meta name="author" content="Santiago Sagrero Arvea">
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --muted: #333333;
+            --border: #dddddd;
+            --primary: #000000;
+            --card-bg: #f5f5f5;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --gradient-light: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --gradient-dark: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg: #000000;
+            --text: #ffffff;
+            --muted: #cccccc;
+            --border: #333333;
+            --primary: #ffffff;
+            --card-bg: #111111;
+            --shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+            transition: background 0.3s ease, color 0.3s ease;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Efecto de fondo sutil */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-light);
+            opacity: 0.03;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        [data-theme="dark"] body::before {
+            background: var(--gradient-dark);
+            opacity: 0.05;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Header limpio */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .role {
+            color: var(--muted);
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+
+        /* Botón de tema minimalista */
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 1.1rem;
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        /* Botón para subir */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            color: var(--bg);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            z-index: 999;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="dark"] .back-to-top {
+            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .back-to-top:hover {
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+
+        .back-to-top.show {
+            display: flex;
+        }
+
+        /* Navegación simple */
+        .categories-nav {
+            margin: 2rem 0;
+            background: var(--card-bg);
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .categories-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .category-btn {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--primary);
+            color: var(--bg);
+            border-color: var(--primary);
+        }
+
+        /* Secciones */
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin: 2rem 0 1rem;
+            color: var(--primary);
+        }
+
+        /* Descripción de categoría */
+        .category-description {
+            color: var(--muted);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            max-width: 800px;
+        }
+
+        /* Grid de 4 columnas en desktop */
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .cert-item {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: var(--bg);
+        }
+
+        .cert-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+            border-color: var(--primary);
+        }
+
+        .cert-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Especialidades - 4 columnas */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .skill-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .skill-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Modal simple sin botón X */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            cursor: pointer;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 95%;
+            max-height: 95%;
+            cursor: default;
+        }
+
+        .modal img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            background: white;
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .cert-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .theme-toggle {
+                align-self: flex-end;
+            }
+
+            .cert-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .categories-list {
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cert-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .back-to-top {
+                bottom: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+
+    <!-- Solo Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <div>
+                <h1>SANTIAGO SAGRERO ARVEA</h1>
+                <div class="role">
+                    Ingeniero en Sistemas · Creador de contenido · Tecnología creativa
+                </div>
+            </div>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </header>
+
+        <section id="about">
+            <h2>SOBRE MÍ</h2>
+            <p>
+                Me formé como ingeniero en sistemas computacionales y encontré en la creación
+                de contenido digital una forma auténtica de aplicar la tecnología.
+            </p>
+            <p>
+                Combino lógica técnica con creatividad en proyectos de entretenimiento,
+                videojuegos, diseño visual e inteligencia artificial.
+            </p>
+        </section>
+
+        <section id="skills">
+            <h2>ESPECIALIDADES</h2>
+            <div class="skills-grid">
+                <div class="skill-card">Tecnología y Sistemas</div>
+                <div class="skill-card">Diseño Digital</div>
+                <div class="skill-card">Inteligencia Artificial</div>
+                <div class="skill-card">Contenido Digital</div>
+            </div>
+        </section>
+
+        <!-- Contenedor principal -->
+        <section id="certifications-container">
+            <h2>CERTIFICACIONES</h2>
+
+            <!-- Navegación limpia -->
+            <nav class="categories-nav">
+                <div class="categories-list" id="categoriesNav">
+                    <!-- Se generará con JavaScript -->
+                </div>
+            </nav>
+
+            <!-- Las secciones se generarán dinámicamente -->
+            <div id="certifications-content">
+                <!-- El contenido se cargará aquí -->
+            </div>
+        </section>
+
+        <section id="interests">
+            <h2>INTERESES</h2>
+            <p>
+                Deporte, gimnasio, boxeo, cultura digital, diseño visual y tecnología aplicada
+                de forma creativa.
+            </p>
+        </section>
+
+        <footer>
+            <p>
+                Sitio estático. No recopila datos ni utiliza servicios externos.
+            </p>
+            <p style="margin-top: 0.5rem;">
+                <small>Última actualización: Enero 2026</small>
+            </p>
+        </footer>
+
+    </div>
+
+    <!-- Botón para volver arriba -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Modal simple sin botón X -->
+    <div class="modal" id="imgModal" onclick="closeImage()">
+        <div class="modal-content">
+            <img id="modalImg" alt="Certificado">
+        </div>
+    </div>
+
+    <script>
+        // Datos de certificados con descripciones de categoría
+        const certificatesData = {
+            "ATENCIÓN A CLIENTE": {
+                files: [
+                    "certificados/atencion_a_cliente/certificate_1758423513928.png",
+                    "certificados/atencion_a_cliente/certificate_1758423572545.png",
+                    "certificados/atencion_a_cliente/certificate_1758423600923.png",
+                    "certificados/atencion_a_cliente/certificate_1758423631059.png",
+                    "certificados/atencion_a_cliente/certificate_1758423664350.png",
+                    "certificados/atencion_a_cliente/certificate_1758423684350.png",
+                    "certificados/atencion_a_cliente/certificate_1758423711035.png"
+                ],
+                description: "Certificaciones en servicio al cliente, comunicación efectiva y resolución de problemas para garantizar satisfacción del cliente."
+            },
+            "CREACIÓN DE CONTENIDO": {
+                files: [
+                    "certificados/contenido/certificate_1758424149328.png",
+                    "certificados/contenido/certificate_1758424528242.png",
+                    "certificados/contenido/certificate_1758424691795.png"
+                ],
+                description: "Habilidades en producción de contenido digital, estrategias de marketing digital y narrativa visual para diferentes plataformas."
+            },
+            "DEPORTES": {
+                files: [
+                    "certificados/deportes/certificate_1758424125249.png",
+                    "certificados/deportes/certificate_1758424665698.png"
+                ],
+                description: "Conocimientos en gestión deportiva, entrenamiento y promoción de actividades físicas para bienestar integral."
+            },
+            "DISEÑO": {
+                files: [
+                    "certificados/tecnologia/certificate_1758425213847.png",
+                    "certificados/diseno/1.png",
+                    "certificados/tecnologia/certificate_1758424978945.png",
+                    "certificados/diseno/-.png"
+                ],
+                description: "Competencias en diseño gráfico, UX/UI, composición visual y herramientas de diseño profesional."
+            },
+            "GESTIÓN": {
+                files: [
+                    "certificados/gestion/certificate_1758423284071.png",
+                    "certificados/gestion/certificate_1758423305227.png",
+                    "certificados/gestion/certificate_1758423350918.png",
+                    "certificados/gestion/certificate_1758423393959.png",
+                    "certificados/gestion/certificate_1758423496607.png",
+                    "certificados/gestion/certificate_1758423726122.png",
+                    "certificados/gestion/certificate_1758423745774.png",
+                    "certificados/gestion/certificate_1758424201280.png"
+                ],
+                description: "Habilidades en administración de proyectos, organización de equipos y optimización de procesos operativos."
+            },
+            "INTELIGENCIA ARTIFICIAL": {
+                files: [
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0001.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0002.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0003.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0004.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0005.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0006.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0007.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0008.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0009.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0010.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0011.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0012.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0013.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0014.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0015.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0016.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0017.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0018.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0019.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0020.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0021.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0022.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0023.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0024.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0025.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0026.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0027.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0028.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0029.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0030.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0031.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0032.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0033.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0034.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0035.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0036.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0037.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0038.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0039.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0040.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0041.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0042.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0043.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0044.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0045.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0046.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0047.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0048.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0049.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0050.jpg",
+                    "certificados/ia/cert-santiago-sagrero-arvea-almacenamiento-inteligente-gestion-de-inventarios-e-ia-20-09-2025-fusionado_page-0051.jpg",
+                    "certificados/ia/certificate_1758423451565.png",
+                    "certificados/ia/certificate_1758424305876.png",
+                    "certificados/ia/certificate_1758424348147.png",
+                    "certificados/ia/certificate_1758424379533.png",
+                    "certificados/ia/certificate_1758424424739.png",
+                    "certificados/ia/PottencIA.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_1bab1e60-e05e-4942-b787-4e80a0b49246.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_245b8d7d-762a-4c52-bddf-aeb61c779d27.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_3ded6ba2-7b43-4998-8ea4-6386ef2be54f.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_48dd12ca-f0bd-48f6-b1ef-eb58a4cab2ab.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_49e06130-f5b1-4449-9241-076eb9cf6a55.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_73eae3d8-f2d2-4f1b-9a1d-6b506aec9e46.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_92feb3af-d58b-4039-81f9-606ffc290bfd.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_bdfe68f7-ac9e-48b4-9a3f-cfa36c3c9c2c.png",
+                    "certificados/ia/Santiago_Sagrero_Arvea_f6a28fc8-6426-45ac-821d-a7620349313d.png",
+                    "certificados/ia/1.png",
+                    "certificados/ia/2.png",
+                    "certificados/ia/3.png",
+                    "certificados/ia/4.png",
+                    "certificados/ia/5.png",
+                    "certificados/ia/6.png",
+                    "certificados/ia/7.png",
+                    "certificados/ia/8.png",
+                    "certificados/ia/a.png",
+                    "certificados/ia/_certificate_sagrerosantiago4-gmail-com_ca8fd83a-0c63-4bae-9ce0-25fc96d0e2dd-fusionado_page-0002.jpg",
+                    "certificados/ia/9.png"
+                ],
+                description: "Especialización en machine learning, algoritmos de IA, automatización y aplicaciones prácticas de inteligencia artificial en diversos campos."
+            },
+            "LIDERAZGO": {
+                files: [
+                    "certificados/liderazgo/certificate_1758423764513.png",
+                    "certificados/liderazgo/certificate_1758423784970.png",
+                    "certificados/liderazgo/certificate_1758423802628.png",
+                    "certificados/liderazgo/certificate_1758423821511.png",
+                    "certificados/liderazgo/certificate_1758423871029.png",
+                    "certificados/liderazgo/certificate_1758423902933.png",
+                    "certificados/liderazgo/certificate_1758423951865.png",
+                    "certificados/liderazgo/certificate_1758423996125.png",
+                    "certificados/liderazgo/certificate_1758424026769.png",
+                    "certificados/liderazgo/certificate_1758424076802.png",
+                    "certificados/liderazgo/certificate_1758424106151.png"
+                ],
+                description: "Habilidades para dirigir equipos, tomar decisiones estratégicas y motivar personas para alcanzar objetivos organizacionales."
+            },
+            "SALUD": {
+                files: [
+                    "certificados/salud/certificate_1758424253842.png",
+                    "certificados/salud/certificate_1758424279286.png",
+                    "certificados/salud/certificate_1758424460058.png",
+                    "certificados/salud/certificate_1758424617258.png",
+                    "certificados/salud/certificate_1758424728686.png",
+                    "certificados/salud/certificate_1758424927213.png",
+                    "certificados/salud/certificate_1758425228982.png",
+                    "certificados/salud/certificate_1758425246951.png",
+                    "certificados/salud/certificate_1758425274710.png"
+                ],
+                description: "Conocimientos en bienestar integral, primeros auxilios, nutrición y prácticas saludables para calidad de vida."
+            },
+            "TECNOLOGÍA": {
+                files: [
+                    "certificados/tecnologia/certificate_1758424488939.png",
+                    "certificados/tecnologia/certificate_1758425007420.png",
+                    "certificados/tecnologia/_certificate_sagrerosantiago4-gmail-com_ca8fd83a-0c63-4bae-9ce0-25fc96d0e2dd-fusionado_page-0001.jpg"
+                ],
+                description: "Competencias técnicas en sistemas informáticos, desarrollo de software y herramientas tecnológicas avanzadas."
+            }
+        };
+
+        // Diplomas y constancias
+        const diplomasData = [
+            "diplomas/IMG20250925_10042441_page-0002.jpg",
+            "diplomas/IMG20250925_10042441_page-0004.jpg",
+            "diplomas/IMG20250925_10042441_page-0008.jpg",
+            "diplomas/IMG20250925_10042441_page-0010.jpg"
+        ];
+
+        const constanciasData = [
+            "constancias/IMG20250925_10042441_page-0006.jpg"
+        ];
+
+        // Variables
+        let activeCategory = 'TODOS';
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function () {
+            initTheme();
+            initNavigation();
+            renderAllContent();
+            initScrollToTop();
+        });
+
+        // Sistema de tema
+        function initTheme() {
+            const toggle = document.getElementById("themeToggle");
+            const icon = toggle.querySelector('i');
+
+            // Preferencia del sistema
+            if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                document.documentElement.setAttribute("data-theme", "dark");
+                icon.className = "fas fa-sun";
+            } else {
+                document.documentElement.setAttribute("data-theme", "light");
+                icon.className = "fas fa-moon";
+            }
+
+            toggle.onclick = () => {
+                const currentTheme = document.documentElement.getAttribute("data-theme");
+                const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+                document.documentElement.setAttribute("data-theme", newTheme);
+                icon.className = newTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+
+                localStorage.setItem('theme', newTheme);
+            }
+
+            // Cargar tema guardado
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute("data-theme", savedTheme);
+                icon.className = savedTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+            }
+        }
+
+        // Navegación
+        function initNavigation() {
+            const navContainer = document.getElementById('categoriesNav');
+            const categories = Object.keys(certificatesData);
+
+            // Botón TODOS
+            const allButton = document.createElement('button');
+            allButton.className = 'category-btn active';
+            allButton.textContent = 'TODOS';
+            allButton.dataset.category = 'TODOS';
+            allButton.onclick = () => filterCertificates('TODOS');
+            navContainer.appendChild(allButton);
+
+            // Botones por categoría
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'category-btn';
+                button.textContent = category;
+                button.dataset.category = category;
+                button.onclick = () => filterCertificates(category);
+                navContainer.appendChild(button);
+            });
+
+            // Diplomas y constancias
+            const diplomasButton = document.createElement('button');
+            diplomasButton.className = 'category-btn';
+            diplomasButton.textContent = 'DIPLOMAS';
+            diplomasButton.dataset.category = 'DIPLOMAS';
+            diplomasButton.onclick = () => filterCertificates('DIPLOMAS');
+            navContainer.appendChild(diplomasButton);
+
+            const constanciasButton = document.createElement('button');
+            constanciasButton.className = 'category-btn';
+            constanciasButton.textContent = 'CONSTANCIAS';
+            constanciasButton.dataset.category = 'CONSTANCIAS';
+            constanciasButton.onclick = () => filterCertificates('CONSTANCIAS');
+            navContainer.appendChild(constanciasButton);
+        }
+
+        // Renderizar todo
+        function renderAllContent() {
+            const container = document.getElementById('certifications-content');
+            container.innerHTML = '';
+
+            // Certificados
+            Object.keys(certificatesData).forEach(category => {
+                const section = document.createElement('div');
+                section.className = 'cert-section';
+                section.dataset.category = category;
+
+                const title = document.createElement('h3');
+                title.textContent = category;
+                section.appendChild(title);
+
+                const description = document.createElement('div');
+                description.className = 'category-description';
+                description.textContent = certificatesData[category].description;
+                section.appendChild(description);
+
+                const grid = document.createElement('div');
+                grid.className = 'cert-grid';
+
+                certificatesData[category].files.forEach(filePath => {
+                    const item = createCertItem(filePath);
+                    grid.appendChild(item);
+                });
+
+                section.appendChild(grid);
+                container.appendChild(section);
+            });
+
+            // Diplomas
+            const diplomasSection = document.createElement('div');
+            diplomasSection.className = 'cert-section';
+            diplomasSection.id = 'diplomas';
+
+            const diplomasTitle = document.createElement('h3');
+            diplomasTitle.textContent = 'DIPLOMAS';
+            diplomasSection.appendChild(diplomasTitle);
+
+            const diplomasDescription = document.createElement('div');
+            diplomasDescription.className = 'category-description';
+            diplomasDescription.textContent = "Documentos académicos que validan estudios formales y especializaciones en diferentes áreas del conocimiento.";
+            diplomasSection.appendChild(diplomasDescription);
+
+            const diplomasGrid = document.createElement('div');
+            diplomasGrid.className = 'cert-grid';
+
+            diplomasData.forEach(filePath => {
+                const item = createCertItem(filePath);
+                diplomasGrid.appendChild(item);
+            });
+
+            diplomasSection.appendChild(diplomasGrid);
+            container.appendChild(diplomasSection);
+
+            // Constancias
+            const constanciasSection = document.createElement('div');
+            constanciasSection.className = 'cert-section';
+            constanciasSection.id = 'constancias';
+
+            const constanciasTitle = document.createElement('h3');
+            constanciasTitle.textContent = 'CONSTANCIAS';
+            constanciasSection.appendChild(constanciasTitle);
+
+            const constanciasDescription = document.createElement('div');
+            constanciasDescription.className = 'category-description';
+            constanciasDescription.textContent = "Documentos que acreditan participación en eventos, cursos y actividades de formación complementaria.";
+            constanciasSection.appendChild(constanciasDescription);
+
+            const constanciasGrid = document.createElement('div');
+            constanciasGrid.className = 'cert-grid';
+
+            constanciasData.forEach(filePath => {
+                const item = createCertItem(filePath);
+                constanciasGrid.appendChild(item);
+            });
+
+            constanciasSection.appendChild(constanciasGrid);
+            container.appendChild(constanciasSection);
+        }
+
+        // Crear elemento de certificado
+        function createCertItem(imagePath) {
+            const item = document.createElement('div');
+            item.className = 'cert-item';
+            item.onclick = () => openImage(imagePath);
+
+            const img = document.createElement('img');
+            img.src = imagePath;
+            img.alt = 'Certificado';
+            img.loading = 'lazy';
+
+            item.appendChild(img);
+            return item;
+        }
+
+        // Filtrar certificados
+        function filterCertificates(category) {
+            activeCategory = category;
+
+            // Actualizar botones activos
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.category === category) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Mostrar/ocultar secciones
+            document.querySelectorAll('.cert-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            if (category === 'TODOS') {
+                document.querySelectorAll('.cert-section').forEach(section => {
+                    section.style.display = 'block';
+                });
+            } else if (category === 'DIPLOMAS') {
+                document.getElementById('diplomas').style.display = 'block';
+            } else if (category === 'CONSTANCIAS') {
+                document.getElementById('constancias').style.display = 'block';
+            } else {
+                document.querySelectorAll(`[data-category="${category}"]`).forEach(el => {
+                    el.style.display = 'block';
+                });
+            }
+
+            // Scroll suave
+            document.getElementById('certifications-container').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Botón para volver arriba
+        function initScrollToTop() {
+            const backToTopBtn = document.getElementById('backToTop');
+
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            });
+
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Modal de imágenes (sin botón X)
+        function openImage(src) {
+            document.getElementById("modalImg").src = src;
+            document.getElementById("imgModal").classList.add("active");
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeImage() {
+            document.getElementById("imgModal").classList.remove("active");
+            document.body.style.overflow = 'auto';
+        }
+
+        // Cerrar modal con Escape o haciendo clic fuera
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeImage();
+            }
+        });
+
+        // También permitir cerrar haciendo clic en la imagen
+        document.getElementById('modalImg').addEventListener('click', (e) => {
+            e.stopPropagation(); // Evitar que el clic en la imagen cierre el modal
+        });
+    </script>
+
+</body>
+
+</html>
